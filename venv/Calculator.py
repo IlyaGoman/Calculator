@@ -16,13 +16,18 @@ def define_variables(variables):
     operands = variables.replace(' ', '').split('=')
     if len(operands) == 2:
 
-        #Invalid identifier
-        for i in operands:
-            if i.isalpha():
-                print('Invalid identifier')
+        if operands[0].isalpha():
+            if operands[1].isdigit(): # define variable and assigment numbers
+                user_dict[operands[0]] = operands[1]
+            elif operands[1].isalpha() and operands[0] in user_dict: # define variable and assigment variable
+                user_dict[operands[0]] = user_dict[operands[1]]
+            else:
+                print('Invalid assignment')
+        else:
+            print('Invalid identifier')
 
-        if variables.count('=') > 1:
-            print('Invalid assignment')
+        # if variables.count('=') > 1:
+        #     print('Invalid assignment')
     else:
         print('Invalid assignment')
 
