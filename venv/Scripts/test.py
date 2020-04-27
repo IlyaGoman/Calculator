@@ -1,1 +1,1 @@
-print('a d'.isalpha())
+print('a2d'.isalpha())

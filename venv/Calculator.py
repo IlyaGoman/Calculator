@@ -18,9 +18,9 @@ def define_variables(variables):
         if operands[0].isalpha():
             if operands[1].isdigit(): # define variable and assigment numbers
                 user_dict[operands[0]] = operands[1]
-            elif operands[1].isalpha() and operands[0] in user_dict: # define variable and assigment variable
+            elif operands[1].isalpha() and operands[1] in user_dict: # define variable and assigment variable
                 user_dict[operands[0]] = user_dict[operands[1]]
-            elif operands[1].isalpha() and operands[0] not in user_dict: # unknown variable
+            elif operands[1].isalpha() and operands[1] not in user_dict: # unknown variable
                 print('Unknown variable')
             else:
                 print('Invalid assignment')
@@ -28,6 +28,16 @@ def define_variables(variables):
             print('Invalid identifier')
     else:
         print('Invalid assignment')
+
+
+def check_variable(variable):
+    if variable.isalpha():
+        if variable in user_dict:
+            print(user_dict[variable])
+        else:
+            print('Unknown variable')
+    else:
+        print('Invalid identifier')
 
 
 def exec_command(command):
@@ -71,17 +81,16 @@ def choice_action(string):
         exec_command(string)
     elif '+' in string or '-' in string:
         calculate(string)
-    else:
-        pass  # check variable exists and print value
+    elif string.strip() != '':
+        check_variable(string)
 
 
 user_dict = {}
 user_in = input()
 possible_operation = ['+', '-']
 
-while user_in != '':
+while user_in != '/exit':
     choice_action(user_in)
-
     user_in = input()
 
 print('Bye!')
