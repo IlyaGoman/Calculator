@@ -9,6 +9,12 @@ def check_input(operand):
     if set(operand) == set('-'): return '-'
     if set(operand) == set('+'): return '+'
     if operand.isdigit() or operand[1:].isdigit(): return 'digits'
+    if operand.isalpha():
+        if operand in user_dict:
+            return 'variable'
+        else:
+            return 'Unknown variable'
+
     return 'Invalid expression'
 
 
@@ -49,29 +55,40 @@ def exec_command(command):
 
 def calculate(expression):
     lst, last_operation, result = [], '', 0
-    if user_in != '':
-        lst = user_in.split()
-        for i in range(len(lst)):
-            check = check_input(lst[i])
-            if check == 'digits':
-                if i == 0:
-                    result = int(lst[i])
-                elif last_operation == '+':
-                    result += int(lst[i])
-                elif last_operation == '-':
-                    result -= int(lst[i])
-                else:
-                    check = 'Invalid expression'
-                    print(check)
-                    break
-            elif check in possible_operation:
-                last_operation = type_operation(lst[i])
+    lst = expression.split()
+    for idx, item in enumerate(lst):
+        check = check_input(item)
+        if check == 'digits':
+            if idx == 0:
+                result = int(item)
+            elif last_operation == '+':
+                result += int(item)
+            elif last_operation == '-':
+                result -= int(item)
             else:
+                check = 'Invalid expression'
+                print(check)
+                break
+        elif check == 'variable':
+            if idx == 0:
+                result = int(user_dict[item])
+            elif last_operation == '+':
+                result += int(user_dict[item])
+            elif last_operation == '-':
+                result -= int(user_dict[item])
+            else:
+                check = 'Invalid expression'
                 print(check)
                 break
 
-        if check != 'Invalid expression':
-            print(result)
+        elif check in possible_operation:
+            last_operation = type_operation(item)
+        else:
+            print(check)
+            break
+
+    if check != 'Invalid expression':
+        print(result)
 
 
 def choice_action(string):
