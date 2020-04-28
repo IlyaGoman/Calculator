@@ -1,3 +1,32 @@
+from pythonds.basic.stack import Stack
+from string import ascii_letters, digits
+
+def infixToPostfix(infixexpr):
+    opStack = Stack()
+    postfixList = []
+    tokenList = infixexpr.split()
+
+    for token in tokenList:
+        if token in ascii_letters or token in digits:
+            postfixList.append(token)
+        elif token == '(':
+            opStack.push(token)
+        elif token == ')':
+            topToken = opStack.pop()
+            while topToken != '(':
+                postfixList.append(topToken)
+                topToken = opStack.pop()
+        else:
+            while (not opStack.isEmpty()) and \
+               (prec[opStack.peek()] >= prec[token]):
+                  postfixList.append(opStack.pop())
+            opStack.push(token)
+
+    while not opStack.isEmpty():
+        postfixList.append(opStack.pop())
+    return " ".join(postfixList)
+
+
 def type_operation(operation):
     if '+' in operation or len(operation) % 2 == 0:
         return '+'
@@ -102,9 +131,22 @@ def choice_action(string):
         check_variable(string)
 
 
+def prec_define():
+    global prec
+    prec["^"] = 4
+    prec["*"] = 3
+    prec["/"] = 3
+    prec["+"] = 2
+    prec["-"] = 2
+    prec["("] = 1
+
+# Initialisation program variables
 user_dict = {}
 user_in = input()
 possible_operation = ['+', '-', '*', '/']
+prec = {}
+prec_define()
+
 
 while user_in != '/exit':
     choice_action(user_in)
