@@ -104,7 +104,7 @@ def choice_action(string):
 
 user_dict = {}
 user_in = input()
-possible_operation = ['+', '-']
+possible_operation = ['+', '-', '*', '/']
 
 while user_in != '/exit':
     choice_action(user_in)
