@@ -1,8 +1,7 @@
-from pythonds.basic.stack import Stack
 from string import ascii_letters, digits
 
 def infixToPostfix(infixexpr):
-    opStack = Stack()
+    opStack = []
     postfixList = []
     tokenList = infixexpr.split()
 
@@ -13,38 +12,38 @@ def infixToPostfix(infixexpr):
         elif  token.isdigit():
             postfixList.append(token)
         elif token == '(':
-            opStack.push(token)
+            opStack.append(token)
         elif token == ')':
             topToken = opStack.pop()
             while topToken != '(':
                 postfixList.append(topToken)
                 topToken = opStack.pop()
         elif token in possible_operation:
-            while (not opStack.isEmpty()) and \
-               (prec[opStack.peek()] >= prec[token]):
+            while len(opStack) > 0 and \
+               (prec[opStack[-1]] >= prec[token]):
                   postfixList.append(opStack.pop())
-            opStack.push(token)
+            opStack.append(token)
         else:
             print(check_var)
             return ''
 
 
-    while not opStack.isEmpty():
+    while len(opStack) > 0:
         postfixList.append(opStack.pop())
     return " ".join(postfixList)
 
 
 def postFixCalculate(expression):
-    stack = Stack()
+    stack = []
     for operand in expression.split():
         if operand in ascii_letters:
-            stack.push(int(user_dict[operand]))
+            stack.append(int(user_dict[operand]))
         elif operand.isdigit():
-            stack.push(int(operand))
+            stack.append(int(operand))
         else:
-            stack.push(calculate(stack.pop(), stack.pop(), operand))
+            stack.append(calculate(stack.pop(), stack.pop(), operand))
         # print(stack.items)
-    return stack.items
+    return stack
 
 
 def calculate(x, y, operation):
@@ -115,15 +114,11 @@ def execCommand(command):
 
 
 def expressionDefine(expression):
-    result = 'not answer'
-
     postfix_expression = infixToPostfix(expression)
-
     if postfix_expression != '':
         result = postFixCalculate(postfix_expression)
-
     if result != 'not answer':
-        print(result[0])
+        print(int(result[0]))
     '''
     lst = expression.split()    
     for idx, item in enumerate(lst):
@@ -165,7 +160,7 @@ def expressionDefine(expression):
 def choiceAction(string):
     if '=' in string:
         defineVariables(string)
-    elif '/' in string:
+    elif string.startswith('/'):
         execCommand(string)
     elif '+' in string or '-' in string[1:] or '/' in string or '*' in string:
         expression = parseExpression(string)
@@ -187,7 +182,7 @@ def parseExpression(expression):
 
 def checkInvalidExpression(expression):
     if expression.count('(') != expression.count(')') or \
-        expression.count('**') > 0 or expression.count('/') > 0:
+        expression.count('**') > 0 or expression.count('//') > 0:
         print('Invalid expression')
         return False
     return True
