@@ -55,11 +55,11 @@ def calculate(x, y, operation):
     return dict_calc[operation](x, y)
 
 
-def type_operation(operation):
-    if '+' in operation or len(operation) % 2 == 0:
-        return '+'
-    else:
-        return '-'
+# def type_operation(operation):
+#     if '+' in operation or len(operation) % 2 == 0:
+#         return '+'
+#     else:
+#         return '-'
 
 
 def check_operation(operand):
@@ -171,6 +171,17 @@ def choice_action(string):
         print(check_variable(string, isprint=True))
 
 
+def parse_expression(expression):
+    expression = expression.replace(' ', '')
+    dict_replace = {'---': '-', \
+                    '--': '+', \
+                    '+++': '+'}
+    for key, value in dict_replace.items():
+        expression = expression.replace(key, value)
+
+    return ' '.join([i for i in expression])
+
+
 def prec_define():
     global prec
     prec["^"] = 4
@@ -188,8 +199,19 @@ prec = {}
 prec_define()
 
 
+def check_invalid_expression(expression):
+    if expression.count('(') % 2 == 1 or expression.count(')') % 2 == 1 or \
+        expression.count('**') > 0 or expression.count('/') > 0:
+        print('Invalid expression')
+        return False
+    return True
+
+
 while user_in != '/exit':
-    choice_action(user_in)
+    expression = parse_expression(user_in)
+    if check_invalid_expression(expression):
+        choice_action(expression)
+
     user_in = input()
 
 print('Bye!')

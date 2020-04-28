@@ -1,4 +1,4 @@
-token = '+'
-pos = ['+','-']
-if token in pos:
-    print(True)
+if not 'Invalid':
+    print('a')
+else:
+    print('b')
