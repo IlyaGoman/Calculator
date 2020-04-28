@@ -7,7 +7,7 @@ def infixToPostfix(infixexpr):
     tokenList = infixexpr.split()
 
     for token in tokenList:
-        check_var = check_variable(token)
+        check_var = checkVariable(token)
         if check_var == 'variable':
             postfixList.append(token)
         elif  token.isdigit():
@@ -75,7 +75,7 @@ def check_operation(operand):
     return 'Invalid expression'
 
 
-def define_variables(variables):
+def defineVariables(variables):
     operands = variables.replace(' ', '').split('=')
     if len(operands) == 2:
         if operands[0].isalpha():
@@ -93,7 +93,7 @@ def define_variables(variables):
         print('Invalid assignment')
 
 
-def check_variable(variable, isprint=False):
+def checkVariable(variable, isprint=False):
     if variable.isalpha():
         if variable in user_dict and isprint:
             return user_dict[variable]
@@ -105,7 +105,7 @@ def check_variable(variable, isprint=False):
         return 'Invalid identifier'
 
 
-def exec_command(command):
+def execCommand(command):
     if user_in == '/help':
         print('The program calculates the expression')
     elif user_in.startswith('/'):
@@ -113,10 +113,10 @@ def exec_command(command):
 
 
 def expressionDefine(expression):
-    lst, last_operation, result = [], '', 'not answer'
+    result = 'not answer'
 
-    postfix_expression = infixToPostfix(expression)
-    # print(postfix_expression)
+    postfix_expression = infixToPostfix(expression))
+    
     if postfix_expression != '':
         result = postFixCalculate(postfix_expression)
 
@@ -160,57 +160,49 @@ def expressionDefine(expression):
     '''
 
 
-def choice_action(string):
+def choiceAction(string):
     if '=' in string:
-        define_variables(string)
+        defineVariables(string)
     elif '/' in string:
-        exec_command(string)
-    elif '+' in string or '-' in string:
-        expressionDefine(string)
+        execCommand(string)
+    elif '+' in string or '-' in string or '/' in string or '*' in string:
+        expression = parseExpression(string)
+        if checkInvalidExpression(expression):
+            expressionDefine(expression)
     elif string.strip() != '':
-        print(check_variable(string, isprint=True))
+        print(checkVariable(string, isprint=True))
 
 
-def parse_expression(expression):
-    expression = expression.replace(' ', '')
-    dict_replace = {'---': '-', \
-                    '--': '+', \
-                    '+++': '+'}
-    for key, value in dict_replace.items():
-        expression = expression.replace(key, value)
+def parseExpression(expression):
+    # expression = expression.replace(' ', '')
+    # dict_replace = {'---': '-', \
+    #                 '--': '+', \
+    #                 '+++': '+'}
+    # for key, value in dict_replace.items():
+    #     expression = expression.replace(key, value)
+    # return ' '.join([i for i in expression])
+    return expression.replace('(', '( ').replace(')', ' )')
 
-    return ' '.join([i for i in expression])
-
-
-def prec_define():
-    global prec
-    prec["^"] = 4
-    prec["*"] = 3
-    prec["/"] = 3
-    prec["+"] = 2
-    prec["-"] = 2
-    prec["("] = 1
-
-# Initialisation program variables
-user_dict = {}
-user_in = input()
-possible_operation = ['+', '-', '*', '/']
-prec = {}
-prec_define()
-
-
-def check_invalid_expression(expression):
-    if expression.count('(') % 2 == 1 or expression.count(')') % 2 == 1 or \
+def checkInvalidExpression(expression):
+    if expression.count('(') != expression.count(')') or \
         expression.count('**') > 0 or expression.count('/') > 0:
         print('Invalid expression')
         return False
     return True
 
 
+# Initialisation program variables
+user_dict = {}
+user_in = input()
+possible_operation = ['+', '-', '*', '/']
+prec = {'^': 4,
+        '*': 3,'/': 3,
+        '+': 2, '-': 2,
+        '(': 1}
+
+
 while user_in != '/exit':
-    expression = parse_expression(user_in)
-    if check_invalid_expression(expression):
-        choice_action(expression)
+    choiceAction(user_in)
 
     user_in = input()
 
