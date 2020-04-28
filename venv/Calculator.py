@@ -4,7 +4,7 @@ from string import ascii_letters, digits
 def infixToPostfix(infixexpr):
     opStack = Stack()
     postfixList = []
-    tokenList = infixexpr.split()
+    tokenList = infixexpr.replace('(', '( ').replace(')', ' )').split()
 
     for token in tokenList:
         if token in ascii_letters or token in digits:
@@ -77,14 +77,18 @@ def check_variable(variable):
 
 def exec_command(command):
     if user_in == '/help':
-        print('The program calculates the sum of numbers')
+        print('The program calculates the expression')
     elif user_in.startswith('/'):
         print('Unknown command')
 
 
 def calculate(expression):
     lst, last_operation, result = [], '', 0
-    lst = expression.split()
+
+    postfix_expression = infixToPostfix(expression)
+    print(postfix_expression)
+    '''
+    lst = expression.split()    
     for idx, item in enumerate(lst):
         check = check_input(item)
         if check == 'digits':
@@ -118,6 +122,7 @@ def calculate(expression):
 
     if check != 'Invalid expression':
         print(result)
+    '''
 
 
 def choice_action(string):
