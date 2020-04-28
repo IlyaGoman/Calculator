@@ -43,15 +43,15 @@ def postFixCalculate(expression):
             stack.push(int(operand))
         else:
             stack.push(calculate(stack.pop(), stack.pop(), operand))
+        # print(stack.items)
     return stack.items
 
 
 def calculate(x, y, operation):
-    operation = type_operation(operation)
     dict_calc = {'+': lambda x, y: x + y, \
-                 '-': lambda x, y: x - y, \
+                 '-': lambda x, y: y - x, \
                  '*': lambda x, y: x * y,
-                 '/': lambda x, y: x / y}
+                 '/': lambda x, y: y / x}
     return dict_calc[operation](x, y)
 
 
@@ -62,17 +62,17 @@ def calculate(x, y, operation):
 #         return '-'
 
 
-def check_operation(operand):
-    if set(operand) == set('-'): return '-'
-    if set(operand) == set('+'): return '+'
-    if operand.isdigit() or operand[1:].isdigit(): return 'digits'
-    if operand.isalpha():
-        if operand in user_dict:
-            return 'variable'
-        else:
-            return 'Unknown variable'
-
-    return 'Invalid expression'
+# def check_operation(operand):
+#     if set(operand) == set('-'): return '-'
+#     if set(operand) == set('+'): return '+'
+#     if operand.isdigit() or operand[1:].isdigit(): return 'digits'
+#     if operand.isalpha():
+#         if operand in user_dict:
+#             return 'variable'
+#         else:
+#             return 'Unknown variable'
+#
+#     return 'Invalid expression'
 
 
 def defineVariables(variables):
@@ -101,6 +101,8 @@ def checkVariable(variable, isprint=False):
             return  'variable'
         else:
             return 'Unknown variable'
+    elif isprint and (variable.isdigit() or variable[1:].isdigit()):
+        return variable
     else:
         return 'Invalid identifier'
 
@@ -115,8 +117,8 @@ def execCommand(command):
 def expressionDefine(expression):
     result = 'not answer'
 
-    postfix_expression = infixToPostfix(expression))
-    
+    postfix_expression = infixToPostfix(expression)
+
     if postfix_expression != '':
         result = postFixCalculate(postfix_expression)
 
@@ -165,7 +167,7 @@ def choiceAction(string):
         defineVariables(string)
     elif '/' in string:
         execCommand(string)
-    elif '+' in string or '-' in string or '/' in string or '*' in string:
+    elif '+' in string or '-' in string[1:] or '/' in string or '*' in string:
         expression = parseExpression(string)
         if checkInvalidExpression(expression):
             expressionDefine(expression)
@@ -175,11 +177,11 @@ def choiceAction(string):
 
 def parseExpression(expression):
     # expression = expression.replace(' ', '')
-    # dict_replace = {'---': '-', \
-    #                 '--': '+', \
-    #                 '+++': '+'}
-    # for key, value in dict_replace.items():
-    #     expression = expression.replace(key, value)
+    dict_replace = {'---': '-', \
+                    '--': '+', \
+                    '+++': '+'}
+    for key, value in dict_replace.items():
+        expression = expression.replace(key, value)
     # return ' '.join([i for i in expression])
     return expression.replace('(', '( ').replace(')', ' )')
 
