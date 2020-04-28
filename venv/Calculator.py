@@ -27,6 +27,24 @@ def infixToPostfix(infixexpr):
     return " ".join(postfixList)
 
 
+def postFixCalculate(expression):
+    stack = Stack()
+    for operand in expression.split():
+        if operand in ascii_letters or operand in digits:
+            stack.push(int(operand))
+        else:
+            stack.push(calculate(stack.pop(), stack.pop(), operand))
+    return stack.items
+
+
+def calculate(x, y, operation):
+    dict_calc = {'+': lambda x, y: x + y, \
+                 '-': lambda x, y: x - y, \
+                 '*': lambda x, y: x * y,
+                 '/': lambda x, y: x / y}
+    return dict_calc[operation](x, y)
+
+
 def type_operation(operation):
     if '+' in operation or len(operation) % 2 == 0:
         return '+'
@@ -82,11 +100,15 @@ def exec_command(command):
         print('Unknown command')
 
 
-def calculate(expression):
+def expressionDefine(expression):
     lst, last_operation, result = [], '', 0
 
     postfix_expression = infixToPostfix(expression)
-    print(postfix_expression)
+    # print(postfix_expression)
+    result = postFixCalculate(postfix_expression)
+
+    if len(result) > 0:
+        print(result[0])
     '''
     lst = expression.split()    
     for idx, item in enumerate(lst):
@@ -131,7 +153,7 @@ def choice_action(string):
     elif '/' in string:
         exec_command(string)
     elif '+' in string or '-' in string:
-        calculate(string)
+        expressionDefine(string)
     elif string.strip() != '':
         check_variable(string)
 
