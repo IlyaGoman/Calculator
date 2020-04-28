@@ -177,7 +177,8 @@ def parseExpression(expression):
                     '+++': '+'}
     for key, value in dict_replace.items():
         expression = expression.replace(key, value)
-    # return ' '.join([i for i in expression])
+    if ' ' not in expression:
+        return ' '.join([i for i in expression])
     return expression.replace('(', '( ').replace(')', ' )')
 
 def checkInvalidExpression(expression):
