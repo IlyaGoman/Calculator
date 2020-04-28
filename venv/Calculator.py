@@ -4,11 +4,13 @@ from string import ascii_letters, digits
 def infixToPostfix(infixexpr):
     opStack = Stack()
     postfixList = []
-    tokenList = infixexpr.replace('(', '( ').replace(')', ' )').split()
+    tokenList = infixexpr.split()
 
     for token in tokenList:
-        if token in ascii_letters or token in digits:
-            if check_variable():
+        check_var = check_variable(token)
+        if check_var == 'variable':
+            postfixList.append(token)
+        elif  token.isdigit():
             postfixList.append(token)
         elif token == '(':
             opStack.push(token)
@@ -17,11 +19,15 @@ def infixToPostfix(infixexpr):
             while topToken != '(':
                 postfixList.append(topToken)
                 topToken = opStack.pop()
-        else:
+        elif token in possible_operation:
             while (not opStack.isEmpty()) and \
                (prec[opStack.peek()] >= prec[token]):
                   postfixList.append(opStack.pop())
             opStack.push(token)
+        else:
+            print(check_var)
+            return ''
+
 
     while not opStack.isEmpty():
         postfixList.append(opStack.pop())
@@ -31,7 +37,9 @@ def infixToPostfix(infixexpr):
 def postFixCalculate(expression):
     stack = Stack()
     for operand in expression.split():
-        if operand in ascii_letters or operand in digits:
+        if operand in ascii_letters:
+            stack.push(int(user_dict[operand]))
+        elif operand.isdigit():
             stack.push(int(operand))
         else:
             stack.push(calculate(stack.pop(), stack.pop(), operand))
@@ -39,6 +47,7 @@ def postFixCalculate(expression):
 
 
 def calculate(x, y, operation):
+    operation = type_operation(operation)
     dict_calc = {'+': lambda x, y: x + y, \
                  '-': lambda x, y: x - y, \
                  '*': lambda x, y: x * y,
@@ -53,7 +62,7 @@ def type_operation(operation):
         return '-'
 
 
-def check_input(operand):
+def check_operation(operand):
     if set(operand) == set('-'): return '-'
     if set(operand) == set('+'): return '+'
     if operand.isdigit() or operand[1:].isdigit(): return 'digits'
@@ -89,7 +98,7 @@ def check_variable(variable, isprint=False):
         if variable in user_dict and isprint:
             return user_dict[variable]
         elif variable in user_dict:
-            return True
+            return  'variable'
         else:
             return 'Unknown variable'
     else:
@@ -104,13 +113,14 @@ def exec_command(command):
 
 
 def expressionDefine(expression):
-    lst, last_operation, result = [], '', 0
+    lst, last_operation, result = [], '', 'not answer'
 
     postfix_expression = infixToPostfix(expression)
     # print(postfix_expression)
-    result = postFixCalculate(postfix_expression)
+    if postfix_expression != '':
+        result = postFixCalculate(postfix_expression)
 
-    if len(result) > 0:
+    if result != 'not answer':
         print(result[0])
     '''
     lst = expression.split()    

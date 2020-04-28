@@ -1,4 +1,4 @@
-if True == True:
-    print('True')
-else:
-     print('False')
+token = '+'
+pos = ['+','-']
+if token in pos:
+    print(True)
