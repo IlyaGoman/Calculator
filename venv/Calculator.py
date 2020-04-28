@@ -8,6 +8,7 @@ def infixToPostfix(infixexpr):
 
     for token in tokenList:
         if token in ascii_letters or token in digits:
+            if check_variable():
             postfixList.append(token)
         elif token == '(':
             opStack.push(token)
@@ -83,14 +84,16 @@ def define_variables(variables):
         print('Invalid assignment')
 
 
-def check_variable(variable):
+def check_variable(variable, isprint=False):
     if variable.isalpha():
-        if variable in user_dict:
-            print(user_dict[variable])
+        if variable in user_dict and isprint:
+            return user_dict[variable]
+        elif variable in user_dict:
+            return True
         else:
-            print('Unknown variable')
+            return 'Unknown variable'
     else:
-        print('Invalid identifier')
+        return 'Invalid identifier'
 
 
 def exec_command(command):
@@ -155,7 +158,7 @@ def choice_action(string):
     elif '+' in string or '-' in string:
         expressionDefine(string)
     elif string.strip() != '':
-        check_variable(string)
+        print(check_variable(string, isprint=True))
 
 
 def prec_define():
